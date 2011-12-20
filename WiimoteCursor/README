@@ -1,0 +1,5 @@
+/////////////////////////////////////////////////////////////////
+====================  CODEBLOCKS PROJECT  ======================
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+Copy the "wiiuse.lib" into the codeblocks/mingw/lib directory (C:\Program Files (x86)\CodeBlocks\MinGW\lib) and add it to the linker to compile
