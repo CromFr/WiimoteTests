@@ -63,8 +63,6 @@ int main(int argc, char** argv)
 
                     case WIIUSE_EVENT:
 
-                        if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_MINUS)) printf("MINUS NON SUPPORTE\n");
-                        if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_PLUS)) printf("PLUS NON SUPPORTE\n");
 
                         if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_TWO)) printf("2 NON SUPPORTE\n");
 
@@ -114,11 +112,21 @@ int main(int argc, char** argv)
                         }
                         //
 
+                        //Souris . molette haut
+                        if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_MINUS))
+                            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, 120, 0);
+                        //
+
                         //Souris . Bouton milieu = HOME
                         if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_HOME))
                             mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
                         if(IS_RELEASED(WMTable[n], WIIMOTE_BUTTON_HOME))
                             mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
+                        //
+
+                        //Souris . molette bas
+                        if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_PLUS))
+                            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
                         //
 
                         //Souris . Clic droit = A
@@ -165,12 +173,14 @@ int main(int argc, char** argv)
             #define ARROW_SPEED 3
 
             #define RELATIVE_ACCEL_RATIO 20
-            #define ABSOLUTE_DECEL 10
+            #define ABSOLUTE_DECEL 40
 
             #define SCREEN_WIDTH 1920
             #define SCREEN_HEIGHT 1080
             for (n=0 ; n>nConnectedWM; n++);
             {
+
+                //Déplacement de la souris
                 tagPOINT CursorPos;
 
                 if(nCursorControl==CUR_CTRL_MOTPOINT || nCursorControl==CUR_CTRL_MOTPAD)
@@ -219,17 +229,22 @@ int main(int argc, char** argv)
                     GetCursorPos(&CursorPos);
 
                     //Elimination des valeurs parasites
-                    //if((abs(nWiimoteX-nPrecX)<10000 && abs(nWiimoteY-nPrecY)<10000) || (nPrecX==-1 && nPrecY==-1))
+                    //if((abs(nWiimoteX-nPrecX)<10 && abs(nWiimoteY-nPrecY)<10) || (nPrecX==-1 && nPrecY==-1))
                     {
                         fMouseSpeedX = (nWiimoteX - CursorPos.x)/RELATIVE_ACCEL_RATIO;
                         fMouseSpeedY = (nWiimoteY - CursorPos.y)/RELATIVE_ACCEL_RATIO;
+                    }
+                    //else
+                    {
+                        fMouseSpeedX = (nPrecX - CursorPos.x)/RELATIVE_ACCEL_RATIO;
+                        fMouseSpeedY = (nPrecY - CursorPos.y)/RELATIVE_ACCEL_RATIO;
                     }
 
                     //
                     SetCursorPos(CursorPos.x+fMouseSpeedX, CursorPos.y+fMouseSpeedY);
 
-                    nPrecX=CursorPos.x+fMouseSpeedX;
-                    nPrecY=CursorPos.y+fMouseSpeedY;
+                    nPrecX=nWiimoteX;
+                    nPrecY=nWiimoteY;
 
 
 
