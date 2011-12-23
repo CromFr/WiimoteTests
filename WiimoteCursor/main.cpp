@@ -37,6 +37,9 @@ int main(int argc, char** argv)
     float fMouseSpeedX=0;
     float fMouseSpeedY=0;
 
+    int nPrecX=-1, nPrecY=-1;
+
+
     while(bLoop)
     {
 
@@ -73,18 +76,24 @@ int main(int argc, char** argv)
                                 if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_B))
                                 {
                                     printf("Controle du curseur par pointage\n");
+                                    nPrecX=-1;
+                                    nPrecY=-1;
                                     nCursorControl = CUR_CTRL_MOTPOINT;
                                     break;
                                 }
                                 else if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_A))
                                 {
                                     printf("Controle du curseur en manette\n");
+                                    nPrecX=-1;
+                                    nPrecY=-1;
                                     nCursorControl = CUR_CTRL_MOTPAD;
                                     break;
                                 }
                                 else if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_UP) || IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_DOWN) || IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_RIGHT) || IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_LEFT))
                                 {
                                     printf("Controle du curseur avec les fleches\n");
+                                    nPrecX=-1;
+                                    nPrecY=-1;
                                     nCursorControl = CUR_CTRL_ARROWS;
                                     break;
                                 }
@@ -155,7 +164,7 @@ int main(int argc, char** argv)
         {
             #define ARROW_SPEED 3
 
-            #define RELATIVE_DECEL 25
+            #define RELATIVE_ACCEL_RATIO 20
             #define ABSOLUTE_DECEL 10
 
             #define SCREEN_WIDTH 1920
@@ -191,38 +200,38 @@ int main(int argc, char** argv)
 
 
 
-
-                    GetCursorPos(&CursorPos);
-
-                    //Déplacement du curseur
-                    //printf("roll=%.2f\npitch=%.2f", WMTable[0]->orient.roll, WMTable[0]->orient.pitch);
-                    int nNewX;
-                    int nNewY;
-                    int nDeltaX;
-                    int nDeltaY;
+                    //Calcul des coordonnées sur l'écran du point donné par la wiimote
+                    int nWiimoteX;
+                    int nWiimoteY;
                     if(nCursorControl==CUR_CTRL_MOTPOINT)
                     {
-                        nNewX = ((WMTable[0]->orient.roll+45)/90)*SCREEN_WIDTH;
-                        nNewY = ((WMTable[0]->orient.pitch+60)/90)*SCREEN_HEIGHT;
+                        nWiimoteX = ((WMTable[0]->orient.roll+45)/90)*SCREEN_WIDTH;
+                        nWiimoteY = ((WMTable[0]->orient.pitch+60)/90)*SCREEN_HEIGHT;
                     }
                     else if(nCursorControl==CUR_CTRL_MOTPAD)
                     {
-                        nNewX = ((WMTable[0]->orient.pitch+45)/90)*SCREEN_WIDTH;
-                        nNewY = ((-WMTable[0]->orient.roll+45)/90)*SCREEN_HEIGHT;
+                        nWiimoteX = ((WMTable[0]->orient.pitch+45)/90)*SCREEN_WIDTH;
+                        nWiimoteY = ((-WMTable[0]->orient.roll+45)/90)*SCREEN_HEIGHT;
                     }
 
-                    nDeltaX = nNewX - CursorPos.x;
-                    nDeltaY = nNewY - CursorPos.y;
 
+                    //Calcul de la vitesse du curseur
+                    GetCursorPos(&CursorPos);
 
-                    fMouseSpeedX += nDeltaX/RELATIVE_DECEL;
-                    fMouseSpeedY += nDeltaY/RELATIVE_DECEL;
+                    //Elimination des valeurs parasites
+                    //if((abs(nWiimoteX-nPrecX)<10000 && abs(nWiimoteY-nPrecY)<10000) || (nPrecX==-1 && nPrecY==-1))
+                    {
+                        fMouseSpeedX = (nWiimoteX - CursorPos.x)/RELATIVE_ACCEL_RATIO;
+                        fMouseSpeedY = (nWiimoteY - CursorPos.y)/RELATIVE_ACCEL_RATIO;
+                    }
 
-
-
-
+                    //
                     SetCursorPos(CursorPos.x+fMouseSpeedX, CursorPos.y+fMouseSpeedY);
-                    //SetCursorPos(nNewX, nNewY);
+
+                    nPrecX=CursorPos.x+fMouseSpeedX;
+                    nPrecY=CursorPos.y+fMouseSpeedY;
+
+
 
                 }
                 else
