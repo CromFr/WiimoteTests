@@ -1,0 +1,13 @@
+==> Initialisation du tableau des wiimotes
+
+==> Recherche des wiimotes...
+...1 wiimotes trouvees
+
+==> Connection des wiimotes...
+...1 wiimotes connectees
+Wiimote status
+
+
+--- CONTROLLER STATUS [wiimote id 1] ---
+leds:            1 0 0 1
+battery:         30.5 %
