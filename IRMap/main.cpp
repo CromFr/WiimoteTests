@@ -116,7 +116,7 @@ int main(int argc, char** argv)
             {
                 if (WMTable[n]->ir.dot[i].visible)
                 {
-                    printf("IR source %i: (%d, %d)\n", i, WMTable[n]->ir.dot[i].x, WMTable[n]->ir.dot[i].y);
+                    //printf("IR source %i: (%d, %d)\n", i, WMTable[n]->ir.dot[i].x, WMTable[n]->ir.dot[i].y);
 
                     SDL_Rect pos;
                     pos.x = WMTable[n]->ir.dot[i].x;
@@ -133,36 +133,6 @@ int main(int argc, char** argv)
 
             //printf("IR cursor: (%u, %u)\n", (unsigned long)WMTable[n]->ir.x, (unsigned long)WMTable[n]->ir.y);
             //printf("IR z distance: %f\n", WMTable[n]->ir.z);
-
-
-
-
-            //Déplacement de la souris
-            tagPOINT CursorPos;
-            if(IS_PRESSED(WMTable[n], WIIMOTE_BUTTON_UP) || IS_HELD(WMTable[n], WIIMOTE_BUTTON_UP))
-            {
-                GetCursorPos(&CursorPos);
-                SetCursorPos(CursorPos.x, CursorPos.y-ARROW_SPEED);
-            }
-            if(IS_PRESSED(WMTable[n], WIIMOTE_BUTTON_DOWN) || IS_HELD(WMTable[n], WIIMOTE_BUTTON_DOWN))
-            {
-                tagPOINT CursorPos;
-                GetCursorPos(&CursorPos);
-                SetCursorPos(CursorPos.x, CursorPos.y+ARROW_SPEED);
-            }
-            if(IS_PRESSED(WMTable[n], WIIMOTE_BUTTON_LEFT) || IS_HELD(WMTable[n], WIIMOTE_BUTTON_LEFT))
-            {
-                tagPOINT CursorPos;
-                GetCursorPos(&CursorPos);
-                SetCursorPos(CursorPos.x-ARROW_SPEED, CursorPos.y);
-            }
-            if(IS_PRESSED(WMTable[n], WIIMOTE_BUTTON_RIGHT) || IS_HELD(WMTable[n], WIIMOTE_BUTTON_RIGHT))
-            {
-                tagPOINT CursorPos;
-                GetCursorPos(&CursorPos);
-                SetCursorPos(CursorPos.x+ARROW_SPEED, CursorPos.y);
-            }
-
         }
 
 
