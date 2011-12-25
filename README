@@ -1,0 +1,8 @@
+================================================================================
+
+
+WiimoteCursor : Controls the mouse cursor with the pitch & roll of the wiimote using the windows API (dont need any infrared sources)
+
+IRMap : Display a map of the differents infrared dots detected by the wiimote
+
+IRPos : Track two ir dots and display its coordinates in x, y AND Z !
