@@ -14,45 +14,36 @@
 
 #include "wiiuse.h"
 
-#include <SDL/SDL.h>
+//#include <SDL/SDL.h>
 
 #define NB_WIIMOTES 4
 
-#define DIST_DOT2WM_MM 300
+#define DIST_DOT2WM_MM 100
+#define DIST_DOT2DOT_MM 20
 
 
 wiimote** WMTable;
 int nConnectedWM;
+const ir_dot_t* dot0=0;
+const ir_dot_t* dot1=0;
 
 void InitWiimotes();
 void EndWiimotes();
 float GetDistanceBetweenDots();
 
+struct coord {int x;int y;};
+
 
 
 int main(int argc, char** argv)
 {
-    freopen("CON", "w", stdout);
-/*    freopen("CON", "r", stdin);
-    freopen("CON", "w", stderr);
-*/
-
     InitWiimotes();
 
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Surface* oApp = SDL_SetVideoMode(1024, 768, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
-
-    SDL_Surface* sprRedDot;
-        sprRedDot = SDL_CreateRGBSurface(SDL_HWSURFACE, 1, 1, 16, 0, 0, 0, 0);
-        SDL_FillRect(sprRedDot, NULL, SDL_MapRGB(oApp->format, 255, 0, 0));
-
-    SDL_Surface* sprGreenDot;
-        sprGreenDot = SDL_CreateRGBSurface(SDL_HWSURFACE, 1, 1, 16, 0, 0, 0, 0);
-        SDL_FillRect(sprGreenDot, NULL, SDL_MapRGB(oApp->format, 0, 255, 0));
 
     bool bLoop = true;
 
     float fRatio = -1.0;
+    float fScale = -1.0;
 
 
 
@@ -81,18 +72,48 @@ int main(int argc, char** argv)
                     case WIIUSE_EVENT:
                         if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_A))
                         {
-                            //if(WMTable[n]->ir.dot[0].visible && WMTable[n]->ir.dot[1].visible)
+                            /*
+                            //Recherche des deux sources infrarouges
+                            for(int i=0 ; i<4 && (dot0==0 && dot1==0) ; i++)
+                            {
+                                if(WMTable[n]->ir.dot[i].visible)
+                                {
+                                    if(dot0==0)
+                                        dot0 = &WMTable[n]->ir.dot[i];
+                                    else
+                                        dot1 = &WMTable[n]->ir.dot[i];
+                                }
+                            }*/
+
+                            dot0=&WMTable[n]->ir.dot[0];
+                            dot1=&WMTable[n]->ir.dot[1];
+
+                            if(dot0->visible && dot1->visible)
                             {
                                 //Calibration !
 
+                                float fDistDotToDot = GetDistanceBetweenDots();
+
+
+                                fRatio = DIST_DOT2WM_MM*fDistDotToDot;
+
                                 //TESTS ONLY :
-                                //fRatio = DIST_DOT2WM_MM/GetDistanceBetweenDots();
-                                fRatio = DIST_DOT2WM_MM*89.6772;
+                                //fRatio = DIST_DOT2WM_MM*273.1;
+
+
+                                fScale = DIST_DOT2DOT_MM/fDistDotToDot;
+
+
+
+
+
+
+                                printf("Wiimote calibree !\n");
 
                             }
-                            //else
+                            else
                             {
-                            //    printf("La calibration requiers deux sources infrarouges");
+                                printf("La calibration requiers deux sources infrarouges\n");
                             }
 
                         }
@@ -104,6 +125,8 @@ int main(int argc, char** argv)
                         printf("\n\n--- CONTROLLER STATUS [wiimote id %i] ---\n", WMTable[n]->unid);
                         printf("leds:            %i %i %i %i\n", WIIUSE_IS_LED_SET(WMTable[n], 1), WIIUSE_IS_LED_SET(WMTable[n], 2), WIIUSE_IS_LED_SET(WMTable[n], 3), WIIUSE_IS_LED_SET(WMTable[n], 4));
                         printf("battery:         %.1f %%\n", 100*WMTable[n]->battery_level);
+
+                        printf("\n\nWIIMOTE NON CALIBREE ! Appuyez sur A une fois les sources placees a %dmm de la wiimote\n", DIST_DOT2WM_MM);
                         break;
 
 					case WIIUSE_READ_DATA:
@@ -129,37 +152,51 @@ int main(int argc, char** argv)
 
         #define SCREEN_WIDTH 1920
         #define SCREEN_HEIGHT 1080
+        struct coord posA, posB, posC;
         for (n=0 ; n>nConnectedWM; n++);
         {
 
-            SDL_Rect posA, posB, posC;
-            if (WMTable[n]->ir.dot[0].visible)
-            {
-                posA.x = WMTable[n]->ir.dot[0].x;
-                posA.y = 768-WMTable[n]->ir.dot[0].y;
-                SDL_BlitSurface(sprRedDot, NULL, oApp, &posA);
-            }
-            if (WMTable[n]->ir.dot[1].visible)
-            {
 
-                posB.x = WMTable[n]->ir.dot[1].x;
-                posB.y = 768-WMTable[n]->ir.dot[1].y;
-                SDL_BlitSurface(sprRedDot, NULL, oApp, &posB);
-            }
-            posC.x = (posA.x+posB.x)/2;
-            posC.y = (posA.y+posB.y)/2;
-            SDL_BlitSurface(sprGreenDot, NULL, oApp, &posC);
 
         }
 
 
+        if(fRatio!=-1.0 && fScale!=-1.0)
+        {
+            printf("\n\nPosition :\n");
+            if(dot0->visible && dot1->visible)
+            {
+                //Positon des dots
+                posA.x = dot0->x;
+                posA.y = 768-dot0->y;
+                posB.x = dot1->x;
+                posB.y = 768-dot1->y;
 
-        //system("CLS");
-        printf("Distance=%.2f mm\n", fRatio/GetDistanceBetweenDots());
+                //Position du centre
+                posC.x = (posA.x+posB.x)/2;
+                posC.y = (posA.y+posB.y)/2;
+
+                //Calcul de la sistance en px séparant les dots
+                float fDistDotToDot = sqrt( (dot0->x-dot1->x)*(dot0->x-dot1->x)+(dot0->y-dot1->y)*(dot0->y-dot1->y) );
+
+                //Distance suivant z
+                //float fZ = fRatio/fDistDotToDot;
+
+                //printf("x=%.2fmm      y=%.2fmm      z=%.2fmm\n", (posC.x-512)*fScale*fZ/DIST_DOT2WM_MM, (posC.y-384)*fScale*fZ/DIST_DOT2WM_MM, fZ);
+
+                float fY=-fRatio/fDistDotToDot;
+                float fX=-(posC.x-512)*fScale*fY/DIST_DOT2WM_MM;
+                float fZ=(posC.y-384)*fScale*fY/DIST_DOT2WM_MM;
+
+                printf("x=%.2fmm      y=%.2fmm      z=%.2fmm\n", fX, fY, fZ);
+            }
+            else
+                printf("Sources IR hors du champ de vision\n");
+        }
 
 
 
-        SDL_Flip(oApp);
+        //SDL_Flip(oApp);
 
 
     }
@@ -233,7 +270,7 @@ void EndWiimotes()
 float GetDistanceBetweenDots()
 {
 
-    return sqrt( (WMTable[0]->ir.dot[0].x-WMTable[0]->ir.dot[1].x)*(WMTable[0]->ir.dot[0].x-WMTable[0]->ir.dot[1].x)+(WMTable[0]->ir.dot[0].y-WMTable[0]->ir.dot[1].y)*(WMTable[0]->ir.dot[0].y-WMTable[0]->ir.dot[1].y) );
+    return sqrt( (dot0->x-dot1->x)*(dot0->x-dot1->x)+(dot0->y-dot1->y)*(dot0->y-dot1->y) );
 }
 
 

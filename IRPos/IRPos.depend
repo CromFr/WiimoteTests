@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1324757436 source:c:\users\administrateur\git projects\wiimotetests\irpos\main.cpp
+1324943017 source:c:\users\administrateur\git projects\wiimotetests\irpos\main.cpp
 	<stdio.h>
 	<cstdlib>
 	<stdlib.h>
@@ -10,7 +10,6 @@
 	<math.h>
 	<unistd.h>
 	"wiiuse.h"
-	<SDL/SDL.h>
 
 1255796849 c:\program files (x86)\codeblocks\sdl-1.2.14\include\sdl\sdl.h
 	"SDL_main.h"
