@@ -18,6 +18,18 @@
 #define CUR_CTRL_ARROWS 0
 #define CUR_CTRL_MOTPOINT 1
 #define CUR_CTRL_MOTPAD 2
+#define CUR_CTRL_IR 3
+
+
+#define ARROW_SPEED 3
+
+#define RELATIVE_ACCEL_RATIO 20
+#define ABSOLUTE_DECEL 40
+
+
+//Largeur et hauteur de l'écran à commander
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 
 wiimote** WMTable;
@@ -85,6 +97,14 @@ int main(int argc, char** argv)
                                     nPrecX=-1;
                                     nPrecY=-1;
                                     nCursorControl = CUR_CTRL_MOTPAD;
+                                    break;
+                                }
+                                else if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_HOME))
+                                {
+                                    printf("Controle du curseur via IR\n");
+                                    nPrecX=-1;
+                                    nPrecY=-1;
+                                    nCursorControl = CUR_CTRL_IR;
                                     break;
                                 }
                                 else if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_UP) || IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_DOWN) || IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_RIGHT) || IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_LEFT))
@@ -170,13 +190,6 @@ int main(int argc, char** argv)
         }
         //else//Pas d'event
         {
-            #define ARROW_SPEED 3
-
-            #define RELATIVE_ACCEL_RATIO 20
-            #define ABSOLUTE_DECEL 40
-
-            #define SCREEN_WIDTH 1920
-            #define SCREEN_HEIGHT 1080
             for (n=0 ; n>nConnectedWM; n++);
             {
 
@@ -185,7 +198,6 @@ int main(int argc, char** argv)
 
                 if(nCursorControl==CUR_CTRL_MOTPOINT || nCursorControl==CUR_CTRL_MOTPAD)
                 {
-
                     //Décélération permanente
                     if(fMouseSpeedX<0)
                     {
@@ -224,9 +236,9 @@ int main(int argc, char** argv)
                         nWiimoteY = ((-WMTable[0]->orient.roll+45)/90)*SCREEN_HEIGHT;
                     }
 
-
                     //Calcul de la vitesse du curseur
                     GetCursorPos(&CursorPos);
+
 
                     //Elimination des valeurs parasites
                     //if((abs(nWiimoteX-nPrecX)<10 && abs(nWiimoteY-nPrecY)<10) || (nPrecX==-1 && nPrecY==-1))
@@ -234,17 +246,51 @@ int main(int argc, char** argv)
                         fMouseSpeedX = (nWiimoteX - CursorPos.x)/RELATIVE_ACCEL_RATIO;
                         fMouseSpeedY = (nWiimoteY - CursorPos.y)/RELATIVE_ACCEL_RATIO;
                     }
-                    //else
+                    /*else
                     {
                         fMouseSpeedX = (nPrecX - CursorPos.x)/RELATIVE_ACCEL_RATIO;
                         fMouseSpeedY = (nPrecY - CursorPos.y)/RELATIVE_ACCEL_RATIO;
-                    }
-
+                    }*/
                     //
+
                     SetCursorPos(CursorPos.x+fMouseSpeedX, CursorPos.y+fMouseSpeedY);
 
                     nPrecX=nWiimoteX;
                     nPrecY=nWiimoteY;
+
+
+                }
+                else if(nCursorControl==CUR_CTRL_IR)
+                {
+
+                    int nSommeX=0, nSommeY=0, nDots=0;
+                    for(int i=0 ; i<4 ; i++)
+                    {
+                        if(WMTable[n]->ir.dot[i].visible)
+                        {
+                            nDots++;
+                            nSommeX+=WMTable[n]->ir.dot[i].x;
+                            nSommeY+=WMTable[n]->ir.dot[i].y;
+                        }
+                    }
+
+                    float fCenterX=-1.0, fCenterY=-1.0;
+
+                    if(nDots!=0)
+                    {
+                        fCenterX=nSommeX/nDots;
+                        fCenterY=nSommeY/nDots;
+                    }
+
+
+                    if(fCenterX!=-1.0 && fCenterY!=-1.0)
+                    {
+
+
+                        int nWiimoteX = (fCenterX/1024)*(SCREEN_WIDTH+200)-100;
+                        int nWiimoteY = (fCenterY/768)*(SCREEN_HEIGHT+200)-100;
+                        SetCursorPos(nWiimoteX, nWiimoteY);
+                    }
 
 
 
@@ -302,8 +348,7 @@ void InitWiimotes()
 
     for(int n=0 ; n<nConnectedWM; n++)
     {
-        wiiuse_set_ir(WMTable[n],0);
-        //wiiuse_set_smooth_alpha (WMTable[n], 255);
+        wiiuse_set_ir(WMTable[n],1);
     }
 
 
@@ -321,7 +366,7 @@ void InitWiimotes()
 
     }
     for(int i=0 ; i<nConnectedWM ; i++)
-        wiiuse_set_leds(WMTable[i], 0xF0);
+        wiiuse_set_leds(WMTable[i], 0x90);
 
 
 
