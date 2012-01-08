@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     float fMouseSpeedX=0;
     float fMouseSpeedY=0;
 
-    int nPrecX=-1, nPrecY=-1;
+    int nPrecX, nPrecY;
 
 
     while(bLoop)
@@ -121,15 +121,9 @@ int main(int argc, char** argv)
 
                         //Souris . Clic gauche = B
                         if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_B))
-                        {
-                            if(nCursorControl == CUR_CTRL_MOTPAD)mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
-                            else mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-                        }
+                            mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
                         if(IS_RELEASED(WMTable[n], WIIMOTE_BUTTON_B))
-                        {
-                            if(nCursorControl == CUR_CTRL_MOTPAD)mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                            else mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                        }
+                            mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
                         //
 
                         //Souris . molette haut
@@ -151,15 +145,9 @@ int main(int argc, char** argv)
 
                         //Souris . Clic droit = A
                         if(IS_JUST_PRESSED(WMTable[n], WIIMOTE_BUTTON_A))
-                        {
-                            if(nCursorControl == CUR_CTRL_MOTPAD)mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-                            else mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                        }
+                            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
                         if(IS_RELEASED(WMTable[n], WIIMOTE_BUTTON_A))
-                        {
-                            if(nCursorControl == CUR_CTRL_MOTPAD)mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                            else mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                        }
+                            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
                         //
                         break;
 
@@ -287,8 +275,8 @@ int main(int argc, char** argv)
                     {
 
 
-                        int nWiimoteX = (fCenterX/1024)*(SCREEN_WIDTH+200)-100;
-                        int nWiimoteY = (fCenterY/768)*(SCREEN_HEIGHT+200)-100;
+                        int nWiimoteX = (fCenterX/1024)*(SCREEN_WIDTH+512)-256;
+                        int nWiimoteY = (fCenterY/768)*(SCREEN_HEIGHT+384)-192;
                         SetCursorPos(nWiimoteX, nWiimoteY);
                     }
 
