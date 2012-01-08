@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1325986132 source:c:\users\administrateur\desktop\headtracking\main.cpp
+	<iostream>
+	<irrlicht.h>
+	"WiimoteHandler.hpp"
+
+1325976061 source:c:\users\administrateur\desktop\headtracking\wiipos.cpp
+	"WiiPos.hpp"
+
+1325968318 source:c:\users\administrateur\desktop\headtracking\wiimotehandler.cpp
+	"WiimoteHandler.hpp"
+
+1325968318 c:\users\administrateur\desktop\headtracking\wiimotehandler.hpp
+	<iostream>
+	<cstdlib>
+	<wiiuse.h>
+	"WiiPos.hpp"
+	"utils.hpp"
+
+1325976047 c:\users\administrateur\desktop\headtracking\wiipos.hpp
+	<iostream>
+	<cstdlib>
+	<fstream>
+	<cmath>
+	<wiiuse.h>
+	"utils.hpp"
+
+1325967323 source:c:\users\administrateur\desktop\headtracking\utils.cpp
+
+1325974940 c:\users\administrateur\desktop\headtracking\utils.hpp
+
