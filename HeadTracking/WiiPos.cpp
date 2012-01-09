@@ -7,6 +7,30 @@ using namespace std;
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ====================================================================================================================*/
+Wiimote3d::Wiimote3d(float x, float y, float z)
+{
+    Wiimote3d::x=x;
+    Wiimote3d::y=y;
+    Wiimote3d::z=z;
+}
+
+void Wiimote3d::set(float x, float y, float z)
+{
+    Wiimote3d::x=x;
+    Wiimote3d::y=y;
+    Wiimote3d::z=z;
+}
+
+
+
+
+
+/*====================================================================================================================
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+====================================================================================================================*/
 WiiPos::WiiPos(wiimote** WMTable, wiimote* Wiimote)
 {
     WiiPos::WM = Wiimote;
@@ -49,6 +73,9 @@ WiiPos::WiiPos(wiimote** WMTable, wiimote* Wiimote)
             else if(sVar == "DistWmToDotsmm")
                 stCalibData>>WiiPos::m_fCALDistWmToDotsmm;
 
+            else if(sVar == "DistWmToScreenCenter")
+                stCalibData>>WiiPos::m_fCALDistWmToScreenCenter;
+
             else if(sVar == "Ratio")
                 stCalibData>>WiiPos::m_fCALRatio;
 
@@ -69,7 +96,7 @@ WiiPos::WiiPos(wiimote** WMTable, wiimote* Wiimote)
             <<"O===============================================O/"<<endl
             <<"| Voulez vous calibrer la Wiimote ? O/N         |/"<<endl
             <<"|  DotToDot = "<<WiiPos::m_fCALDistDotToDotmm<<"mm = "<<WiiPos::m_fCALDistDotToDotpx<<"px\t\t\t|/"<<endl
-            <<"|  WmToDot = "<<WiiPos::m_fCALDistWmToDotsmm<<"mm\t\t\t\t|/"<<endl
+            <<"|  WmToDot = "<<WiiPos::m_fCALDistWmToDotsmm<<"mm\tWmToScreen = "<<WiiPos::m_fCALDistWmToScreenCenter<<"\t|/"<<endl
             <<"|  Ratio = "<<WiiPos::m_fCALRatio<<"\tScale = "<<WiiPos::m_fCALScale<<"\t|/"<<endl
             <<"O===============================================O"<<endl;
 
@@ -154,8 +181,9 @@ void WiiPos::Calibrer()
         stCalibData<<"DistDotToDotmm "<<WiiPos::m_fCALDistDotToDotmm<<endl
                    <<"DistDotToDotpx "<<WiiPos::m_fCALDistDotToDotpx<<endl
                    <<"DistWmToDotsmm "<<WiiPos::m_fCALDistWmToDotsmm<<endl
+                   <<"DistWmToScreenCenter "<<WiiPos::m_fCALDistWmToScreenCenter<<endl
                    <<"Ratio "<<WiiPos::m_fCALRatio<<endl
-                   <<"Scale "<<WiiPos::m_fCALScale;
+                   <<"Scale "<<WiiPos::m_fCALScale<<endl;
     }
     else
     {
@@ -183,9 +211,9 @@ catch(int e)
     }
 }*/
 
-Coord3d WiiPos::GetPosition() const
+Wiimote3d WiiPos::GetPosition() const
 {
-    Coord3d posA, posB, posC;
+    Wiimote3d posA, posB, posC;
 
     while(wiiuse_poll(WiiPos::WMTable, 2))
     {
@@ -215,11 +243,11 @@ Coord3d WiiPos::GetPosition() const
 
                     float fY=-WiiPos::m_fCALRatio / fDistDotToDot;
                     float fX=-(posC.x-512) * WiiPos::m_fCALScale * fY / WiiPos::m_fCALDistWmToDotsmm;
-                    float fZ= (posC.y-384) * WiiPos::m_fCALScale * fY / WiiPos::m_fCALDistWmToDotsmm;
+                    float fZ= (posC.y-384) * WiiPos::m_fCALScale * fY / WiiPos::m_fCALDistWmToDotsmm + WiiPos::m_fCALDistWmToScreenCenter;
 
                     //cout<<"X="<<fX<<"\tY="<<fY<<"\tZ="<<fZ<<endl;
 
-                    return Coord3d(fX, fY, fZ);
+                    return Wiimote3d(fX, fY, fZ);
                 }
                 else
                     throw EXC_WIIPOS_NOT_ENOUGH_IRSRC;

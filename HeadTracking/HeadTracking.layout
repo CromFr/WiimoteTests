@@ -2,21 +2,21 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="WiiPos.cpp" open="1" top="0" tabpos="4">
-		<Cursor position="7089" topLine="197" />
+		<Cursor position="8923" topLine="195" />
 	</File>
 	<File name="WiiPos.hpp" open="1" top="0" tabpos="5">
-		<Cursor position="262" topLine="0" />
+		<Cursor position="282" topLine="0" />
 	</File>
 	<File name="WiimoteHandler.cpp" open="1" top="0" tabpos="3">
 		<Cursor position="5593" topLine="119" />
 	</File>
 	<File name="WiimoteHandler.hpp" open="1" top="0" tabpos="2">
-		<Cursor position="530" topLine="3" />
+		<Cursor position="187" topLine="3" />
 	</File>
 	<File name="main.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="1387" topLine="45" />
+		<Cursor position="4205" topLine="117" />
 	</File>
 	<File name="utils.hpp" open="1" top="0" tabpos="6">
-		<Cursor position="337" topLine="0" />
+		<Cursor position="394" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

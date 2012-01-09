@@ -29,3 +29,39 @@
 
 1325974940 c:\users\administrateur\desktop\headtracking\utils.hpp
 
+1326119542 source:c:\users\administrateur\git projects\wiimotetests\headtracking\wiimotehandler.cpp
+	"WiimoteHandler.hpp"
+
+1326121036 c:\users\administrateur\git projects\wiimotetests\headtracking\wiimotehandler.hpp
+	<iostream>
+	<cstdlib>
+	<wiiuse.h>
+	"WiiPos.hpp"
+
+1326120767 c:\users\administrateur\git projects\wiimotetests\headtracking\wiipos.hpp
+	<iostream>
+	<cstdlib>
+	<fstream>
+	<cmath>
+	<wiiuse.h>
+
+1326120660 c:\users\administrateur\git projects\wiimotetests\headtracking\utils.hpp
+
+1326128386 source:c:\users\administrateur\git projects\wiimotetests\headtracking\main.cpp
+	<iostream>
+	<irrlicht.h>
+	"WiimoteHandler.hpp"
+	"transition.hpp"
+
+1325967323 source:c:\users\administrateur\git projects\wiimotetests\headtracking\utils.cpp
+
+1326120774 source:c:\users\administrateur\git projects\wiimotetests\headtracking\wiipos.cpp
+	"WiiPos.hpp"
+
+1326124664 source:c:\users\administrateur\git projects\wiimotetests\headtracking\transition.cpp
+	"transition.hpp"
+
+1326124555 c:\users\administrateur\git projects\wiimotetests\headtracking\transition.hpp
+	<irrlicht.h>
+	"WiimoteHandler.hpp"
+

@@ -2,6 +2,7 @@
 #include <irrlicht.h>
 
 #include "WiimoteHandler.hpp"
+#include "transition.hpp"
 
 #define ID_CAMERA 1
 
@@ -11,19 +12,35 @@ using namespace irr;
 
 
 
+
+float DegToRad(float fDeg)
+{
+    return 3.1415936*fDeg/180;
+}
+
+
+void TranslateCameraToPos(scene::ICameraSceneNode* oCamera, irr::core::vector3df Pos)
+{
+    oCamera->setTarget(core::vector3df(Pos.X, Pos.Y, Pos.Z+1));
+    oCamera->setPosition(core::vector3df(Pos.X, Pos.Y, Pos.Z));
+
+}
+
+
+
 int main()
 {
 
     WiimoteHandler WMHndl;
 
 
-    /*
-    //Test du syst de positionnement
-    while(1)
+    //==================== Test du syst de positionnement
+    #define TEST_POSITIONNING false
+    while(TEST_POSITIONNING)
     {
         try
         {
-            Coord3d PlayerPos = WMHndl.GetPlayerPos();
+            Wiimote3d PlayerPos = WMHndl.GetPlayerPos();
 
             std::cout<<PlayerPos.x<<"   \t"<<PlayerPos.y<<"   \t"<<PlayerPos.z<<std::endl;
         }
@@ -37,7 +54,8 @@ int main()
                 std::cout<<"Erreur inconnue"<<std::endl;
         }
     }
-    */
+    //--------------------
+
 
 
 
@@ -47,51 +65,50 @@ int main()
         <<"| Lancement du moteur 3D ! |/"<<std::endl
         <<"O==========================O"<<std::endl;
 
-    //Création de la fenêtre
-    IrrlichtDevice *oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1440,900), 32);
+
+    //==================== Création de la fenêtre
+    #define FULLSCREEN true
+    IrrlichtDevice *oDev = 0;
+    if(FULLSCREEN)
+        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920,1080), 32, true);
+    else
+        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1440,900), 32, false);
+
+    oDev->setWindowCaption(L"Irrlicht : HeadTracking");
 
     video::IVideoDriver* oDriver = oDev->getVideoDriver();
 
     scene::ISceneManager *oSM = oDev->getSceneManager ();
 
     oDev->getCursorControl()-> setVisible(false);
-
-
     //--------------------
 
 
+    //==================== Chargement des images 2d
+    video::ITexture *texNoIRSrc = oDriver->getTexture("data/no_ir_src.png");
+    //--------------------
 
+
+    //==================== Setup de la caméra
     scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNode(0, core::vector3df(0, 0, 0), core::vector3df(0, 0, 0), ID_CAMERA);
-    //nodeCamera->bindTargetAndRotation(true);
-    //nodeCamera->setRotation(core::vector3df(0, 100, 100));
-
-
-    /*scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNodeFPS (
-	0,       // le noeud parent de la caméra
-	100.0,           // la vitesse de rotation de la caméra
-	0.1,             // la vitesse de déplacement
-	ID_CAMERA,                    // numéro d'identification du noeud
-	0,     // une map permettant de re-affecter les touches
-	5,            // taille de la keyMap
-	true,   // autorise ou non les mouvements sur l'axe vertical
-	10.0,             // vitesse de déplacement lors d'un saut
-	false,          // inverse ou non la rotation de la caméra
-	true);*/
-
+    nodeCamera->bindTargetAndRotation(true);
 
     nodeCamera->setFarValue(5000);
     //--------------------
 
-    //Création du cube-background
+
+    //==================== Création du cube-background
     scene::IAnimatedMeshSceneNode *nodeBackGround = oSM->addAnimatedMeshSceneNode(oSM->getMesh("data/cube.3ds"));
     //nodeBackGround->setMaterialTexture(0, oDriver->getTexture("data/mesh.bmp"));
     nodeBackGround->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+    //--------------------
 
 
-
-    oSM->setAmbientLight(video::SColor(128,255,255,255));
+    //==================== Eclairage
+    oSM->setAmbientLight(video::SColor(255,255,255,255));
 
     //oSM->addLightSceneNode (0, core::vector3df(1000,0,500), video::SColor(255,0,255,0), 100.0f);
+    //--------------------
 
 
 
@@ -99,8 +116,9 @@ int main()
 
 
 
+    int i=0;
 
-
+    bool bNoIRSrc = false;
     //Boucle principale
     while(oDev->run())
     {
@@ -108,29 +126,76 @@ int main()
         oDriver->beginScene(true, true, video::SColor(255,0,0,255));
 
 
-        //fRota+=0.1;
-        //nodeCamera->setRotation(irr::core::vector3df(fRota, fRota/2, fRota/3));
-
         try
         {
-            Coord3d posPlayer = WMHndl.GetPlayerPos();
+        //==
+            //On récupère les coordonnées du joueur
+            //Cette methode peut throw
+            Wiimote3d posPlayer = WMHndl.GetPlayerPos();
 
-            //Si la récup des coordonnées s'est bien passée
-            nodeCamera->setPosition(core::vector3df(posPlayer.x, posPlayer.z, -posPlayer.y-1000));
+            //GetPlayerPos n'a pas throw : il y a assez de sources
+            bNoIRSrc=false;
+
+
+            //On positionne la caméra à l'endroit du joueur
+            TranslateCameraToPos(nodeCamera, Wiimote3dToWorld3d(posPlayer.x, 0, posPlayer.z));
+
+
+            //==================== On calcule la rotation de la caméra
+            //Horizontalement
+            float fHrzAlpha1=atan(posPlayer.x/(-posPlayer.y));
+            float fHrzAlpha2=atan( (600-posPlayer.x)/(-posPlayer.y));
+            // ...
+
+            //Verticalement
+            // ...
+
+            //On l'applique à la caméra
+            float fRotaRad = fHrzAlpha1-fHrzAlpha2;
+            //nodeCamera->setRotation(core::vector3df(0, core::PI*fRotaRad/180, 0));
+            //--------------------
+
+
+            //==================== Calcul du champs de vision horizontal
+            //float fHrzFOV = fHrzAlpha1 + fHrzAlpha2;
+            //nodeCamera->setFOV(fHrzFOV);
+            //--------------------
+
+
+
+            /*
+            core::stringw sCaption = L"Rota=";
+            sCaption += (fHrzAlpha1-fHrzAlpha2);
+            oDev->setWindowCaption(sCaption.c_str());*/
+
+        //==
         }
         catch(int e)
         {
-
+            if(e==EXC_WIIPOS_NOT_ENOUGH_IRSRC)
+            {
+                bNoIRSrc=true;
+            }
         }
-
-
 
 
 
         //Rendre la scène
         oSM->drawAll();
 
+
+        //Notification GUI
+        if(bNoIRSrc)
+            oDriver->draw2DImage(texNoIRSrc, irr::core::position2d<irr::s32>(50,50),
+                        irr::core::rect<irr::s32>(0,0,200,200), 0,
+                        irr::video::SColor(255, 255, 255, 255), true);
+
+
         //Affichage de la scène
         oDriver->endScene();
+
+
+        //i++;
+        //Sleep(100);
     }
 }

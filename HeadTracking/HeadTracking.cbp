@@ -39,8 +39,8 @@
 		<Unit filename="WiimoteHandler.cpp" />
 		<Unit filename="WiimoteHandler.hpp" />
 		<Unit filename="main.cpp" />
-		<Unit filename="utils.cpp" />
-		<Unit filename="utils.hpp" />
+		<Unit filename="transition.cpp" />
+		<Unit filename="transition.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

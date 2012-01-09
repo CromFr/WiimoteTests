@@ -8,8 +8,6 @@
 #include <wiiuse.h>
 
 #include "WiiPos.hpp"
-#include "utils.hpp"
-
 
 
 #define NB_WIIMOTES 2
@@ -26,7 +24,7 @@ class WiimoteHandler
     ~WiimoteHandler();
 
 
-    Coord3d GetPlayerPos()const;
+    Wiimote3d GetPlayerPos()const;
 
 
     private:
