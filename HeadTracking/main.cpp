@@ -19,15 +19,6 @@ float DegToRad(float fDeg)
 }
 
 
-void TranslateCameraToPos(scene::ICameraSceneNode* oCamera, irr::core::vector3df Pos)
-{
-    oCamera->setTarget(core::vector3df(Pos.X, Pos.Y, Pos.Z+10));
-    //oCamera->setTarget(core::vector3df(0, 0, 0));
-    oCamera->setPosition(core::vector3df(Pos.X, Pos.Y, Pos.Z));
-
-}
-
-
 
 int main()
 {
@@ -91,9 +82,9 @@ int main()
 
 
     //==================== Setup de la caméra
-    scene::ISceneNode* nodeCamParent = oSM->addEmptySceneNode();
+    scene::ISceneNode* nodeCamContainer = oSM->addEmptySceneNode();
 
-    scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNode(nodeCamParent, core::vector3df(0, 0, 0), core::vector3df(0, 0, 0), ID_CAMERA);
+    scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNode(nodeCamContainer, core::vector3df(0, 0, 0), core::vector3df(0, 0, 10), ID_CAMERA);
     nodeCamera->bindTargetAndRotation(false);
 
     nodeCamera->setFarValue(5000);
@@ -104,6 +95,12 @@ int main()
     scene::IAnimatedMeshSceneNode *nodeBackGround = oSM->addAnimatedMeshSceneNode(oSM->getMesh("data/cube.3ds"));
     //nodeBackGround->setMaterialTexture(0, oDriver->getTexture("data/mesh.bmp"));
     nodeBackGround->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+    //--------------------
+
+
+    //==================== Joueur
+    scene::IAnimatedMeshSceneNode *nodePlayer = oSM->addAnimatedMeshSceneNode(oSM->getMesh("data/joueur.3ds"), nodeCamera, -1, core::vector3df(0, 0, 100), core::vector3df(0, 0, 0), core::vector3df(0.5, 0.5, 0.5));
+    nodePlayer->setMaterialFlag(irr::video::EMF_LIGHTING, true);
     //--------------------
 
 
@@ -144,29 +141,29 @@ int main()
 
 
             //On positionne la caméra à l'endroit du joueur
-            TranslateCameraToPos(nodeCamera, posCamera);
+            nodeCamContainer->setPosition(posCamera);
 
 
             //==================== On calcule le champs de vision
             //Horizontalement
-            float fHrzFOV1=fabs( atan((WORLD_WIDTH/2+posCamera.X)/posCamera.Z) );
-            float fHrzFOV2=fabs( atan((WORLD_WIDTH/2-posCamera.X)/posCamera.Z) );
-            float fHrzFOV = fHrzFOV1+fHrzFOV2;
+            float fHrzFOV1=atan((WORLD_WIDTH/2+posCamera.X)/posCamera.Z);
+            float fHrzFOV2=atan((-WORLD_WIDTH/2+posCamera.X)/posCamera.Z);
+            float fHrzFOV = fabs(fHrzFOV1-fHrzFOV2);
             // ...
 
             //Verticalement
-            float fVerFOV1=fabs( atan((WORLD_HEIGHT/2+posCamera.Y)/posCamera.Z) );
-            float fVerFOV2=fabs( atan((WORLD_HEIGHT/2-posCamera.Y)/posCamera.Z) );
-            float fVerFOV = fVerFOV1+fVerFOV2;
+            float fVerFOV1=atan((WORLD_HEIGHT/2+posCamera.Y)/posCamera.Z);
+            float fVerFOV2=atan((-WORLD_HEIGHT/2+posCamera.Y)/posCamera.Z);
+            float fVerFOV = fabs(fVerFOV1-fVerFOV2);
 
             nodeCamera->setAspectRatio(fHrzFOV/fVerFOV);
             nodeCamera->setFOV(fHrzFOV);
             //--------------------
 
 
-            core::vector3df facFacing((fVerFOV1-fVerFOV/2.0), -(fHrzFOV1-fHrzFOV/2.0), 0);
+            core::vector3df facFacing((abs(fVerFOV1)-fVerFOV)/2.0, -(abs(fHrzFOV1)-fHrzFOV)/2.0, 0);
             //core::vector3df facFacing(0, 0, 0);
-            //nodeCamParent->setRotation(facFacing);
+            nodeCamContainer->setRotation(facFacing);
 
 
 
