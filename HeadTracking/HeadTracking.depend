@@ -47,7 +47,7 @@
 
 1326120660 c:\users\administrateur\git projects\wiimotetests\headtracking\utils.hpp
 
-1326128386 source:c:\users\administrateur\git projects\wiimotetests\headtracking\main.cpp
+1326900174 source:c:\users\administrateur\git projects\wiimotetests\headtracking\main.cpp
 	<iostream>
 	<irrlicht.h>
 	"WiimoteHandler.hpp"
@@ -61,7 +61,7 @@
 1326124664 source:c:\users\administrateur\git projects\wiimotetests\headtracking\transition.cpp
 	"transition.hpp"
 
-1326124555 c:\users\administrateur\git projects\wiimotetests\headtracking\transition.hpp
+1326900215 c:\users\administrateur\git projects\wiimotetests\headtracking\transition.hpp
 	<irrlicht.h>
 	"WiimoteHandler.hpp"
 

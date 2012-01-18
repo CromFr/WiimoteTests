@@ -15,13 +15,14 @@ using namespace irr;
 
 float DegToRad(float fDeg)
 {
-    return 3.1415936*fDeg/180;
+    return 3.14159365*fDeg/180;
 }
 
 
 void TranslateCameraToPos(scene::ICameraSceneNode* oCamera, irr::core::vector3df Pos)
 {
-    oCamera->setTarget(core::vector3df(Pos.X, Pos.Y, Pos.Z+1));
+    oCamera->setTarget(core::vector3df(Pos.X, Pos.Y, Pos.Z+10));
+    //oCamera->setTarget(core::vector3df(0, 0, 0));
     oCamera->setPosition(core::vector3df(Pos.X, Pos.Y, Pos.Z));
 
 }
@@ -67,12 +68,12 @@ int main()
 
 
     //==================== Création de la fenêtre
-    #define FULLSCREEN true
+    #define FULLSCREEN false
     IrrlichtDevice *oDev = 0;
     if(FULLSCREEN)
         oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920,1080), 32, true);
     else
-        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1440,900), 32, false);
+        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1800,900), 32, false);
 
     oDev->setWindowCaption(L"Irrlicht : HeadTracking");
 
@@ -80,7 +81,7 @@ int main()
 
     scene::ISceneManager *oSM = oDev->getSceneManager ();
 
-    oDev->getCursorControl()-> setVisible(false);
+    oDev->getCursorControl()-> setVisible(true);
     //--------------------
 
 
@@ -90,8 +91,10 @@ int main()
 
 
     //==================== Setup de la caméra
-    scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNode(0, core::vector3df(0, 0, 0), core::vector3df(0, 0, 0), ID_CAMERA);
-    nodeCamera->bindTargetAndRotation(true);
+    scene::ISceneNode* nodeCamParent = oSM->addEmptySceneNode();
+
+    scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNode(nodeCamParent, core::vector3df(0, 0, 0), core::vector3df(0, 0, 0), ID_CAMERA);
+    nodeCamera->bindTargetAndRotation(false);
 
     nodeCamera->setFarValue(5000);
     //--------------------
@@ -137,36 +140,44 @@ int main()
             bNoIRSrc=false;
 
 
+            core::vector3df posCamera = Wiimote3dToWorld3d(posPlayer);
+
+
             //On positionne la caméra à l'endroit du joueur
-            TranslateCameraToPos(nodeCamera, Wiimote3dToWorld3d(posPlayer.x, 0, posPlayer.z));
+            TranslateCameraToPos(nodeCamera, posCamera);
 
 
-            //==================== On calcule la rotation de la caméra
+            //==================== On calcule le champs de vision
             //Horizontalement
-            float fHrzAlpha1=atan(posPlayer.x/(-posPlayer.y));
-            float fHrzAlpha2=atan( (600-posPlayer.x)/(-posPlayer.y));
+            float fHrzFOV1=fabs( atan((WORLD_WIDTH/2+posCamera.X)/posCamera.Z) );
+            float fHrzFOV2=fabs( atan((WORLD_WIDTH/2-posCamera.X)/posCamera.Z) );
+            float fHrzFOV = fHrzFOV1+fHrzFOV2;
             // ...
 
             //Verticalement
-            // ...
+            float fVerFOV1=fabs( atan((WORLD_HEIGHT/2+posCamera.Y)/posCamera.Z) );
+            float fVerFOV2=fabs( atan((WORLD_HEIGHT/2-posCamera.Y)/posCamera.Z) );
+            float fVerFOV = fVerFOV1+fVerFOV2;
 
-            //On l'applique à la caméra
-            float fRotaRad = fHrzAlpha1-fHrzAlpha2;
-            //nodeCamera->setRotation(core::vector3df(0, core::PI*fRotaRad/180, 0));
+            nodeCamera->setAspectRatio(fHrzFOV/fVerFOV);
+            nodeCamera->setFOV(fHrzFOV);
             //--------------------
 
 
-            //==================== Calcul du champs de vision horizontal
-            //float fHrzFOV = fHrzAlpha1 + fHrzAlpha2;
-            //nodeCamera->setFOV(fHrzFOV);
-            //--------------------
+            core::vector3df facFacing((fVerFOV1-fVerFOV/2.0), -(fHrzFOV1-fHrzFOV/2.0), 0);
+            //core::vector3df facFacing(0, 0, 0);
+            //nodeCamParent->setRotation(facFacing);
 
 
 
-            /*
-            core::stringw sCaption = L"Rota=";
-            sCaption += (fHrzAlpha1-fHrzAlpha2);
-            oDev->setWindowCaption(sCaption.c_str());*/
+
+
+
+            core::stringw sCaption = L"fac ver=";
+            sCaption += facFacing.X;
+            sCaption += L"  fac hrz=";
+            sCaption += facFacing.Y;
+            oDev->setWindowCaption(sCaption.c_str());
 
         //==
         }
@@ -195,7 +206,7 @@ int main()
         oDriver->endScene();
 
 
-        //i++;
+        i++;
         //Sleep(100);
     }
 }
