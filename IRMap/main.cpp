@@ -46,9 +46,21 @@ int main(int argc, char** argv)
         sprRedDot = SDL_CreateRGBSurface(SDL_HWSURFACE, 1, 1, 16, 0, 0, 0, 0);
         SDL_FillRect(sprRedDot, NULL, SDL_MapRGB(oApp->format, 255, 0, 0));
 
+    /*SDL_Surface* sprRedDot4;
+        sprRedDot = SDL_CreateRGBSurface(SDL_HWSURFACE, 3, 3, 16, 0, 0, 0, 0);
+        SDL_FillRect(sprRedDot, NULL, SDL_MapRGB(oApp->format, 255, 0, 0));
+
+    SDL_Surface* sprRedDot8;
+        sprRedDot = SDL_CreateRGBSurface(SDL_HWSURFACE, 5, 5, 16, 0, 0, 0, 0);
+        SDL_FillRect(sprRedDot, NULL, SDL_MapRGB(oApp->format, 255, 0, 0));
+
+    SDL_Surface* sprRedDot12;
+        sprRedDot = SDL_CreateRGBSurface(SDL_HWSURFACE, 7, 7, 16, 0, 0, 0, 0);
+        SDL_FillRect(sprRedDot, NULL, SDL_MapRGB(oApp->format, 255, 0, 0));
+
     SDL_Surface* sprGreenDot;
         sprGreenDot = SDL_CreateRGBSurface(SDL_HWSURFACE, 1, 1, 16, 0, 0, 0, 0);
-        SDL_FillRect(sprGreenDot, NULL, SDL_MapRGB(oApp->format, 0, 255, 0));
+        SDL_FillRect(sprGreenDot, NULL, SDL_MapRGB(oApp->format, 0, 255, 0));*/
 
     bool bLoop = true;
 
@@ -121,15 +133,35 @@ int main(int argc, char** argv)
                     SDL_Rect pos;
                     pos.x = WMTable[n]->ir.dot[i].x;
                     pos.y = 768-WMTable[n]->ir.dot[i].y;
+
+                    /*if(WMTable[n]->ir.dot[i].size<4)
+                    {
+                        SDL_BlitSurface(sprRedDot, NULL, oApp, &pos);
+                    }
+                    else if(WMTable[n]->ir.dot[i].size<8)
+                    {
+                        pos.x-=1; pos.y-=1;
+                        SDL_BlitSurface(sprRedDot4, NULL, oApp, &pos);
+                    }
+                    else if(WMTable[n]->ir.dot[i].size<12)
+                    {
+                        pos.x-=2; pos.y-=2;
+                        SDL_BlitSurface(sprRedDot8, NULL, oApp, &pos);
+                    }
+                    else
+                    {
+                        pos.x-=3; pos.y-=3;
+                        SDL_BlitSurface(sprRedDot12, NULL, oApp, &pos);
+                    }*/
                     SDL_BlitSurface(sprRedDot, NULL, oApp, &pos);
                 }
 
             }
 
-            SDL_Rect pos;
-            pos.x = (signed long)WMTable[n]->ir.x;
-            pos.y = 768-(signed long)WMTable[n]->ir.y;
-            SDL_BlitSurface(sprGreenDot, NULL, oApp, &pos);
+            //SDL_Rect pos;
+            //pos.x = (signed long)WMTable[n]->ir.x;
+            //pos.y = 768-(signed long)WMTable[n]->ir.y;
+            //SDL_BlitSurface(sprGreenDot, NULL, oApp, &pos);
 
             //printf("IR cursor: (%u, %u)\n", (unsigned long)WMTable[n]->ir.x, (unsigned long)WMTable[n]->ir.y);
             //printf("IR z distance: %f\n", WMTable[n]->ir.z);

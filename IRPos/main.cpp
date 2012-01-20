@@ -98,11 +98,13 @@ int main(int argc, char** argv)
                                 fRatio = DIST_DOT2WM_MM*fDistDotToDot;
 
                                 //TESTS ONLY :
-                                //fRatio = DIST_DOT2WM_MM*273.1;
+                                fRatio = DIST_DOT2WM_MM*273.1;
 
 
                                 fScale = DIST_DOT2DOT_MM/fDistDotToDot;
 
+                                //TESTS ONLY
+                                fScale = DIST_DOT2DOT_MM/273.1;
 
 
 

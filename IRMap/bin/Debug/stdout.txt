@@ -10,4 +10,4 @@ Wiimote status
 
 --- CONTROLLER STATUS [wiimote id 1] ---
 leds:            1 0 0 1
-battery:         29.5 %
+battery:         40.5 %
