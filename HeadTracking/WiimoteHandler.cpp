@@ -95,6 +95,10 @@ WiimoteHandler::WiimoteHandler()
     }
 
 
+    //WiimoteHandler::UpdateThread = Update();
+    //WiimoteHandler::UpdateThread(this);
+    //WiimoteHandler::UpdateThread.join();
+
 
 
 }
@@ -141,7 +145,16 @@ Wiimote3d WiimoteHandler::GetPlayerPos()const
 
 
 
+void Update()
+{
 
+
+
+
+
+
+
+}
 
 
 

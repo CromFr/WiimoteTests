@@ -4,7 +4,6 @@
 #include "WiimoteHandler.hpp"
 #include "transition.hpp"
 
-#define ID_CAMERA 1
 
 
 
@@ -12,11 +11,6 @@ using namespace irr;
 
 
 
-
-float DegToRad(float fDeg)
-{
-    return 3.14159365*fDeg/180;
-}
 
 
 
@@ -30,21 +24,25 @@ int main()
     #define TEST_POSITIONNING false
     while(TEST_POSITIONNING)
     {
+
         try
         {
             Wiimote3d PlayerPos = WMHndl.GetPlayerPos();
-
-            std::cout<<PlayerPos.x<<"   \t"<<PlayerPos.y<<"   \t"<<PlayerPos.z<<std::endl;
+            std::cout<<std::endl<<std::endl<<"Position :"<<std::endl;
+            std::cout<<"x="<<PlayerPos.x<<"   \ty="<<PlayerPos.y<<"   \tz="<<PlayerPos.z<<std::endl;
         }
         catch(int e)
         {
             if(e==EXC_WIIPOS_NOT_ENOUGH_IRSRC)
                 std::cout<<"Pas assez de sources"<<std::endl;
-            else if(e==EXC_WIIPOS_NO_EVENT)
-                std::cout<<"Pas d'event correct trouve"<<std::endl;
             else
-                std::cout<<"Erreur inconnue"<<std::endl;
+                std::cout<<std::endl;
+            //else if(e==EXC_WIIPOS_NO_EVENT)
+            //    std::cout<<"Pas d'event correct trouve"<<std::endl;
+            //else
+            //    std::cout<<"Erreur inconnue"<<std::endl;
         }
+        Sleep(70);
     }
     //--------------------
 
@@ -59,12 +57,12 @@ int main()
 
 
     //==================== Création de la fenêtre
-    #define FULLSCREEN false
+    #define FULLSCREEN true
     IrrlichtDevice *oDev = 0;
     if(FULLSCREEN)
         oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920,1080), 32, true);
     else
-        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1800,900), 32, false);
+        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920,1050), 32, false);
 
     oDev->setWindowCaption(L"Irrlicht : HeadTracking");
 
@@ -84,7 +82,7 @@ int main()
     //==================== Setup de la caméra
     scene::ISceneNode* nodeCamContainer = oSM->addEmptySceneNode();
 
-    scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNode(nodeCamContainer, core::vector3df(0, 0, 0), core::vector3df(0, 0, 10), ID_CAMERA);
+    scene::ICameraSceneNode* nodeCamera = oSM->addCameraSceneNode(nodeCamContainer, core::vector3df(0, 0, 0), core::vector3df(0, 0, 10));
     nodeCamera->bindTargetAndRotation(false);
 
     nodeCamera->setFarValue(5000);
@@ -95,35 +93,41 @@ int main()
     scene::IAnimatedMeshSceneNode *nodeBackGround = oSM->addAnimatedMeshSceneNode(oSM->getMesh("data/cube.3ds"));
     //nodeBackGround->setMaterialTexture(0, oDriver->getTexture("data/mesh.bmp"));
     nodeBackGround->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+    nodeBackGround->setMaterialFlag(irr::video::EMF_FOG_ENABLE, true);
     //--------------------
 
 
     //==================== Joueur
-    scene::IAnimatedMeshSceneNode *nodePlayer = oSM->addAnimatedMeshSceneNode(oSM->getMesh("data/joueur.3ds"), nodeCamera, -1, core::vector3df(0, 0, 100), core::vector3df(0, 0, 0), core::vector3df(0.5, 0.5, 0.5));
-    nodePlayer->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+    //scene::IAnimatedMeshSceneNode *nodePlayer = oSM->addAnimatedMeshSceneNode(oSM->getMesh("data/joueur.3ds"), nodeCamera, -1, core::vector3df(0, 0, 100), core::vector3df(0, 0, 0), core::vector3df(0.5, 0.5, 0.5));
+    //nodePlayer->setMaterialFlag(irr::video::EMF_LIGHTING, true);
     //--------------------
 
 
     //==================== Eclairage
     oSM->setAmbientLight(video::SColor(255,255,255,255));
 
-    //oSM->addLightSceneNode (0, core::vector3df(1000,0,500), video::SColor(255,0,255,0), 100.0f);
+    //oSM->addLightSceneNode(0, core::vector3df(1000,0,500), video::SColor(255,0,255,0), 100.0f);
+    //--------------------
+
+    //==================== Brouillard
+    oDriver->setFog(irr::video::SColor(0, 0, 0, 0), irr::video::EFT_FOG_LINEAR,
+          2000.0f,
+          3000.0f,
+          0.01f,
+          true,
+          true);
     //--------------------
 
 
 
 
 
-
-
-    int i=0;
-
     bool bNoIRSrc = false;
     //Boucle principale
     while(oDev->run())
     {
         //Prépare le rendu
-        oDriver->beginScene(true, true, video::SColor(255,0,0,255));
+        oDriver->beginScene(true, true, video::SColor(255,0,0,0));
 
 
         try
@@ -163,9 +167,8 @@ int main()
 
             core::vector3df facFacing((abs(fVerFOV1)-fVerFOV)/2.0, -(abs(fHrzFOV1)-fHrzFOV)/2.0, 0);
             //core::vector3df facFacing(0, 0, 0);
-            nodeCamContainer->setRotation(facFacing);
-
-
+            //nodeCamContainer->setRotation(facFacing);
+            //nodeCamera->setTarget(core::vector3df(sin(facFacing.Y), sin(facFacing.X), cos(facFacing.X)));
 
 
 
@@ -201,9 +204,5 @@ int main()
 
         //Affichage de la scène
         oDriver->endScene();
-
-
-        i++;
-        //Sleep(100);
     }
 }

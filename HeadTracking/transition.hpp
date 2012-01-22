@@ -5,8 +5,8 @@
 #include "WiimoteHandler.hpp"
 
 
-#define SCREEN_WIDTH_MM 345
-#define SCREEN_HEIGHT_MM 195
+#define SCREEN_WIDTH_MM 520
+#define SCREEN_HEIGHT_MM 300
 
 #define WORLD_WIDTH 300
 #define WORLD_HEIGHT 300

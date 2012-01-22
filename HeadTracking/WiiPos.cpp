@@ -43,7 +43,7 @@ WiiPos::WiiPos(wiimote** WMTable, wiimote* Wiimote)
     char cAns;
 
     //Recherche des donnees de calibrage
-    ifstream stCalibData("data/calib.conf");
+    ifstream stCalibData("data/calib.cfg");
     if(!stCalibData)
     {
         cout<<endl<<endl<<endl<<endl
@@ -198,19 +198,6 @@ void WiiPos::Calibrer()
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ====================================================================================================================*/
-/*try
-{
-    //code pour actualiser normalement
-    WiiPos.GetPosition();
-}
-catch(int e)
-{
-    if(e==ERR_NOT_ENOUGH_IRSRC)
-    {
-        //code pour ne pas actualiser
-    }
-}*/
-
 Wiimote3d WiiPos::GetPosition() const
 {
     Wiimote3d posA, posB, posC;
@@ -241,9 +228,15 @@ Wiimote3d WiiPos::GetPosition() const
                                                   (WiiPos::WM->ir.dot[0].y-WiiPos::WM->ir.dot[1].y)
                                                  *(WiiPos::WM->ir.dot[0].y-WiiPos::WM->ir.dot[1].y) );
 
-                    float fY=-WiiPos::m_fCALRatio / fDistDotToDot;
+
+                    // TODO (Administrateur#1#): Gestion du pitch
+                    //float fPitch = -WiiPos::WM->orient.pitch;
+                    //*cos((fPitch/180)*3.14159265)
+
+                    float fY=(-WiiPos::m_fCALRatio / fDistDotToDot);
                     float fX=-(posC.x-512) * WiiPos::m_fCALScale * fY / WiiPos::m_fCALDistWmToDotsmm;
-                    float fZ= (posC.y-384) * WiiPos::m_fCALScale * fY / WiiPos::m_fCALDistWmToDotsmm + WiiPos::m_fCALDistWmToScreenCenter;
+                    float fZ= ((posC.y-384) * WiiPos::m_fCALScale * fY / WiiPos::m_fCALDistWmToDotsmm + WiiPos::m_fCALDistWmToScreenCenter);
+
 
                     //cout<<"X="<<fX<<"\tY="<<fY<<"\tZ="<<fZ<<endl;
 

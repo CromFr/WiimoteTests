@@ -27,6 +27,10 @@ class WiimoteHandler
     Wiimote3d GetPlayerPos()const;
 
 
+    void operator()(){std::cout<<"Thread!\t";}
+
+
+
     private:
     wiimote** m_WMTable;
     int m_nConnectedWM;

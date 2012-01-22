@@ -30,9 +30,14 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="C:\Program Files (x86)\CodeBlocks\boost_1_48_0" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="C:\Program Files (x86)\CodeBlocks\boost_1_48_0" />
+		</ResourceCompiler>
 		<Linker>
 			<Add library="C:\Program Files (x86)\CodeBlocks\irrlicht-mingw\lib\wiiuse.lib" />
+			<Add directory="C:\Program Files (x86)\CodeBlocks\boost_1_48_0" />
 		</Linker>
 		<Unit filename="WiiPos.cpp" />
 		<Unit filename="WiiPos.hpp" />

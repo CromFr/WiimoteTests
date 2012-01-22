@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Debug" />
+	<ActiveTarget name="Release" />
 	<File name="WiiPos.cpp" open="1" top="0" tabpos="4">
 		<Cursor position="9568" topLine="210" />
 	</File>
