@@ -3,6 +3,7 @@
 
 #include "WiimoteHandler.hpp"
 #include "transition.hpp"
+#include "ConfigFile.hpp"
 
 
 
@@ -16,6 +17,13 @@ using namespace irr;
 
 int main()
 {
+    ConfigFile MyConfig("data/config.cfg");
+    std::cout<<MyConfig.GetValue("MonVecteur");
+
+    //return 0;
+
+
+
 
     WiimoteHandler WMHndl;
 

@@ -39,6 +39,8 @@
 			<Add library="C:\Program Files (x86)\CodeBlocks\irrlicht-mingw\lib\wiiuse.lib" />
 			<Add directory="C:\Program Files (x86)\CodeBlocks\boost_1_48_0" />
 		</Linker>
+		<Unit filename="ConfigFile.cpp" />
+		<Unit filename="ConfigFile.hpp" />
 		<Unit filename="WiiPos.cpp" />
 		<Unit filename="WiiPos.hpp" />
 		<Unit filename="WiimoteHandler.cpp" />

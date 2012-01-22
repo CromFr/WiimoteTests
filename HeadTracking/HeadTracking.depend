@@ -47,15 +47,16 @@
 
 1326120660 c:\users\administrateur\git projects\wiimotetests\headtracking\utils.hpp
 
-1327235219 source:c:\users\administrateur\git projects\wiimotetests\headtracking\main.cpp
+1327250505 source:c:\users\administrateur\git projects\wiimotetests\headtracking\main.cpp
 	<iostream>
 	<irrlicht.h>
 	"WiimoteHandler.hpp"
 	"transition.hpp"
+	"ConfigFile.hpp"
 
 1325967323 source:c:\users\administrateur\git projects\wiimotetests\headtracking\utils.cpp
 
-1327235219 source:c:\users\administrateur\git projects\wiimotetests\headtracking\wiipos.cpp
+1327237692 source:c:\users\administrateur\git projects\wiimotetests\headtracking\wiipos.cpp
 	"WiiPos.hpp"
 
 1327099298 source:c:\users\administrateur\git projects\wiimotetests\headtracking\transition.cpp
@@ -2322,4 +2323,13 @@
 	"condition_variable_fwd.hpp"
 	<boost/config/abi_prefix.hpp>
 	<boost/config/abi_suffix.hpp>
+
+1327246380 source:c:\users\administrateur\git projects\wiimotetests\headtracking\configfile.cpp
+	"ConfigFile.hpp"
+
+1327242886 c:\users\administrateur\git projects\wiimotetests\headtracking\configfile.hpp
+	<iostream>
+	<cstdlib>
+	<fstream>
+	<vector>
 
