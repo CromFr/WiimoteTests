@@ -52,11 +52,18 @@ class ConfigFile
     /// it can be "10" or "Thibaut CHARLES" or even "10.5 18.0 80.6" for a vector
     std::string GetValue(std::string sName);
 
-    /// Delete the line and rewrite it
-    void SetValue(std::string sName, std::string sValue);
+    /// Change a value without saving it
+    void ChangeValue(std::string sName, std::string sValue);
+
+    ///Save all change made by ChangeValue(..)
+    void SaveToFile(std::string sNewFile="");
+
+    ///Prints the config to cout
+    void Print();
 
 
     private:
+    std::string m_sPath;
     std::vector<struct ConfigLine> m_Config;
 
 };

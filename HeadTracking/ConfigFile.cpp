@@ -26,6 +26,8 @@ ConfigFile::ConfigFile(string sPath)
 ====================================================================================================================*/
 void ConfigFile::Load(string sPath)
 {
+    m_sPath = sPath;
+
     //Open the file
     ifstream strifConfigFile(sPath.c_str());
 
@@ -110,9 +112,190 @@ std::string ConfigFile::GetValue(std::string sName)
 
 
 
+/*====================================================================================================================
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+====================================================================================================================*/
+void ConfigFile::ChangeValue(std::string sName, std::string sValue)
+{
+    //Find occurences in the config
+    bool bIsRegistered = false;
+    unsigned int n;
+    for(n=0 ; n<m_Config.size() ; n++)
+    {
+        if(m_Config[n].name == sName)
+        {
+            bIsRegistered=true;
+            break;
+        }
+    }
+
+
+    if(bIsRegistered)
+    {
+        m_Config[n].value = sValue;
+    }
+    else
+    {
+        //Prepare the struct
+        struct ConfigLine ConfigLine;
+        ConfigLine.name = sName;
+        ConfigLine.value = sValue;
+
+        m_Config.push_back(ConfigLine);
+    }
+}
 
 
 
+/*====================================================================================================================
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+====================================================================================================================*/
+void ConfigFile::SaveToFile(string sNewFile)
+{
+    //Open the file
+    ifstream strRead(m_sPath.c_str());
+    if(!strRead)
+    {
+        cout<<endl<<"Cannot open config file '"<<m_sPath<<"'"<<endl;
+        return;
+    }
+
+    string sFile="";
+
+    //Creation and initialisation of the check table
+    bool bConfigLinesWrited[m_Config.size()];
+    for(int i=0 ; i<m_Config.size() ; i++)
+        bConfigLinesWrited[i]=false;
+
+
+
+    string sName;
+    char cChar;
+    do
+    {
+        //Ignore \n, spaces or tabulations
+        do
+        {
+            strRead.get(cChar);
+            sFile+=cChar;
+        }while( (cChar==' ' || cChar=='\t' || cChar=='\n' ) && !strRead.eof());
+
+        //The cursor is after the first interessant caracter
+
+        if(cChar=='#')//Comments
+        {
+            string sLine;
+            getline(strRead, sLine);
+            sFile+=sLine+'\n';
+        }
+        else
+        {//Interesting line
+            //Getting line name
+            string sWord;
+
+            strRead>>sWord;
+            sName = cChar+sWord;
+            sFile+=sWord;
+
+            //record spaces & tabs
+            do
+            {
+                strRead.get(cChar);
+                if(cChar==' ' || cChar=='\t')
+                    sFile+=cChar;
+
+            }while(cChar==' ' || cChar=='\t');
+
+            //Find occurence in m_Config
+
+            bool bRewrite = false;
+            unsigned int n;
+            for(n=0 ; n<m_Config.size() ; n++)
+            {
+                if(m_Config[n].name==sName)
+                {
+                    bRewrite = true;
+                    break;
+                }
+            }
+
+            if(bRewrite)
+            {
+                //Apply the change to new file
+                sFile += m_Config[n].value+';';
+
+                //Check the corresponding box :
+                bConfigLinesWrited[n]=true;
+
+                // and pass threw the old value on the old file
+                while(cChar!=';')
+                {
+                    strRead.get(cChar);
+                }
+            }
+        }
+
+    }while(!strRead.eof());
+
+
+    bool bAddLines = false;
+    for(unsigned int n=0 ; n<m_Config.size() && bAddLines==false ; n++)
+    {
+        if(!bConfigLinesWrited[n])
+            bAddLines = true;
+    }
+
+
+    //Add the addlist !
+    if(bAddLines)
+    {
+        sFile+="\n#=========>Automatically added :";
+        for(unsigned int n=0 ; n<m_Config.size() ; n++)
+        {
+            if(!bConfigLinesWrited[n])
+                sFile+="\n"+m_Config[n].name+'\t'+m_Config[n].value+';';
+        }
+        sFile+="\n#==============================O";
+    }
+
+
+
+    if(sNewFile=="")
+    {
+        //Rewriting the entire file
+        ofstream strWrite(m_sPath.c_str());
+        strWrite<<sFile;
+    }
+    else
+    {
+        ofstream strWrite(sNewFile.c_str());
+        strWrite<<sFile;
+    }
+
+
+
+}
+
+
+
+
+/*====================================================================================================================
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+====================================================================================================================*/
+void ConfigFile::Print()
+{
+    cout<<endl<<"=============================================================> CURRENT CONFIG"<<endl;
+    for(unsigned int i=0 ; i<m_Config.size() ; i++)
+    {
+        cout<<m_Config[i].name<<"   \t\t"<<m_Config[i].value<<"   \t;"<<endl;
+    }
+
+
+
+}
 
 
 
