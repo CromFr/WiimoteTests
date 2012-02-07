@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="ConfigFile.cpp" open="1" top="1" tabpos="9">
-		<Cursor position="2869" topLine="69" />
+	<File name="ConfigFile.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="4067" topLine="82" />
 	</File>
 	<File name="ConfigFile.hpp" open="1" top="0" tabpos="8">
-		<Cursor position="445" topLine="3" />
+		<Cursor position="1384" topLine="34" />
 	</File>
-	<File name="WiiPos.cpp" open="1" top="0" tabpos="4">
-		<Cursor position="4328" topLine="113" />
+	<File name="WiiPos.cpp" open="1" top="1" tabpos="4">
+		<Cursor position="9048" topLine="189" />
 	</File>
 	<File name="WiiPos.hpp" open="1" top="0" tabpos="5">
-		<Cursor position="141" topLine="29" />
+		<Cursor position="858" topLine="39" />
 	</File>
 	<File name="WiimoteHandler.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="3969" topLine="57" />
+		<Cursor position="3661" topLine="69" />
 	</File>
 	<File name="WiimoteHandler.hpp" open="1" top="0" tabpos="2">
-		<Cursor position="431" topLine="5" />
+		<Cursor position="488" topLine="5" />
 	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="290" topLine="0" />
+		<Cursor position="4439" topLine="131" />
 	</File>
 	<File name="transition.cpp" open="1" top="0" tabpos="6">
-		<Cursor position="2517" topLine="0" />
+		<Cursor position="2517" topLine="18" />
 	</File>
 	<File name="transition.hpp" open="1" top="0" tabpos="7">
 		<Cursor position="236" topLine="0" />

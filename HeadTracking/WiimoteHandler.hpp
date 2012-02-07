@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <wiiuse.h>
 
+#include "ConfigFile.hpp"
 #include "WiiPos.hpp"
 
 
@@ -18,7 +19,7 @@ class WiimoteHandler
     public:
 
     ///Organise le tableau des wiimotes & entame la procédure d'initialisation
-    WiimoteHandler();
+    WiimoteHandler(ConfigFile* Config);
 
     ///Supprime les allocs dyna
     ~WiimoteHandler();
@@ -27,13 +28,12 @@ class WiimoteHandler
     Wiimote3d GetPlayerPos()const;
 
 
-    void operator()(){std::cout<<"Thread!\t";}
-
 
 
     private:
     wiimote** m_WMTable;
     int m_nConnectedWM;
+    ConfigFile* m_Config;
 
 
     WiiPos* m_WiimotePos;

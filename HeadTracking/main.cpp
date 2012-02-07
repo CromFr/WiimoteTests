@@ -14,18 +14,11 @@ using namespace irr;
 
 
 
-
 int main()
 {
-    ConfigFile MyConfig("data/config.cfg");
-    std::cout<<MyConfig.GetValue("MonVecteur");
+    ConfigFile Config("data/config.cfg");
 
-    //return 0;
-
-
-
-
-    WiimoteHandler WMHndl;
+    WiimoteHandler WMHndl(&Config);
 
 
     //==================== Test du syst de positionnement
@@ -65,12 +58,12 @@ int main()
 
 
     //==================== Création de la fenêtre
-    #define FULLSCREEN true
+    #define FULLSCREEN false
     IrrlichtDevice *oDev = 0;
     if(FULLSCREEN)
         oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920,1080), 32, true);
     else
-        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1920,1050), 32, false);
+        oDev = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1800,950), 32, false);
 
     oDev->setWindowCaption(L"Irrlicht : HeadTracking");
 
@@ -180,12 +173,12 @@ int main()
 
 
 
-
+/*
             core::stringw sCaption = L"fac ver=";
             sCaption += facFacing.X;
             sCaption += L"  fac hrz=";
             sCaption += facFacing.Y;
-            oDev->setWindowCaption(sCaption.c_str());
+            oDev->setWindowCaption(sCaption.c_str());*/
 
         //==
         }

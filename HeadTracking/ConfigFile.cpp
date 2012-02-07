@@ -107,7 +107,7 @@ std::string ConfigFile::GetValue(std::string sName)
         if(m_Config[i].name == sName)
             return m_Config[i].value;
     }
-    return "NO VALUE FOUND";
+    throw 0;
 }
 
 
@@ -116,7 +116,7 @@ std::string ConfigFile::GetValue(std::string sName)
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ====================================================================================================================*/
-void ConfigFile::ChangeValue(std::string sName, std::string sValue)
+void ConfigFile::SetValue(std::string sName, std::string sValue)
 {
     //Find occurences in the config
     bool bIsRegistered = false;
@@ -166,7 +166,7 @@ void ConfigFile::SaveToFile(string sNewFile)
 
     //Creation and initialisation of the check table
     bool bConfigLinesWrited[m_Config.size()];
-    for(int i=0 ; i<m_Config.size() ; i++)
+    for(unsigned int i=0 ; i<m_Config.size() ; i++)
         bConfigLinesWrited[i]=false;
 
 
@@ -292,6 +292,7 @@ void ConfigFile::Print()
     {
         cout<<m_Config[i].name<<"   \t\t"<<m_Config[i].value<<"   \t;"<<endl;
     }
+    cout<<"============================================================================<"<<endl;
 
 
 

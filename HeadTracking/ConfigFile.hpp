@@ -26,13 +26,6 @@ MonVecteur 10.5 18.0 80.6;
 #include <fstream>
 #include <vector>
 
-struct ConfigLine
-{
-    int curpos;
-    std::string name;
-    std::string value;
-};
-
 
 class ConfigFile
 {
@@ -50,12 +43,14 @@ class ConfigFile
 
     ///Return the string that reprensents the value of the config line
     /// it can be "10" or "Thibaut CHARLES" or even "10.5 18.0 80.6" for a vector
+    /// throws int 0 if the row does not exist
     std::string GetValue(std::string sName);
 
-    /// Change a value without saving it
-    void ChangeValue(std::string sName, std::string sValue);
+    /// Set a value without saving it to the config file
+    void SetValue(std::string sName, std::string sValue);
 
-    ///Save all change made by ChangeValue(..)
+    ///Save the current config to the config file
+    /// sNewFile : if void, will save to the current config file, otherwise save to the specified one
     void SaveToFile(std::string sNewFile="");
 
     ///Prints the config to cout
@@ -63,6 +58,14 @@ class ConfigFile
 
 
     private:
+
+    struct ConfigLine
+    {
+        int curpos;
+        std::string name;
+        std::string value;
+    };
+
     std::string m_sPath;
     std::vector<struct ConfigLine> m_Config;
 

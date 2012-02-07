@@ -6,8 +6,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
 #include <cmath>
 #include <wiiuse.h>
+#include "ConfigFile.hpp"
 
 
 
@@ -35,10 +37,11 @@ class WiiPos
 {
 
     public:
-    ///Initialisation et calibration
-    WiiPos(wiimote** WMTable, wiimote* Wiimote);
 
-    //~WiiPos();
+    WiiPos(){}
+
+    ///Initialisation et calibration
+    WiiPos(wiimote** WMTable, wiimote* Wiimote, int nConnectedWM, ConfigFile* Config);
 
 
     void Calibrer();
@@ -49,11 +52,13 @@ class WiiPos
 
 
     ///La wiimote utilisée
-    wiimote* WM;
+    wiimote* m_WM;
 
 
     private:
-    wiimote** WMTable;
+    wiimote** m_WMTable;
+    int m_nConnectedWM;
+    ConfigFile* m_Config;
 
     float m_fCALDistDotToDotmm;
     float m_fCALDistDotToDotpx;
